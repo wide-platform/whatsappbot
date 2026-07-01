@@ -1,6 +1,27 @@
 from flask import Flask,request, jsonify
+import requests
 
 app=Flask(__name__)
+
+verify_toekn='testtoken'
+phone_number_id='1223995324127406'
+access_token='EAAObTIE5ifYBRzX6tuzRxwg0hThGywzP6za65Q60MdhGBRHxmqHphdT9W8pgCX6xQvWBdcalWwafeTdEbgdwgfS0GR1IQzeUzI9rKiKQj0wvyRwMjFWTR1Qurw8bnRZAH2uMqi870yj7QFqmxLQ1eiqhRgqRUba18rM9Yc7NKKNbVJTcXukp97XUcW13kSMQBUrTjzOPNKbvLxvmhHCoxKae7mYqATW0WlFaDkUHMIZCVGUdvZAJZCrZCraIHRZCocZCcATWfDh6MLZCN9w1JXKX'
+
+def send_message(recipient_number , message_text):
+    url = f'https://graph.facebook.com/v18.0/{phone_number_id}/messages'
+
+    headers={
+        "Authorization":f"Bearer {access_token}",
+        "Content-Type":"application/json"
+    }
+
+    payload = {
+        "messaging_product":"whatsapp",
+        "to":recipient_number,
+        "type":"text",
+        "text":{"body":message_text}
+    }
+    requests.post(url,headers=headers,json =payload)
 
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
@@ -24,6 +45,8 @@ def webhook():
                 message =body['entry'][0]['changes'][0]['value']['messages'][0]
                 phone_number = message['from']
                 text = message['text']['body']
+
+                send_message(phone_number,"Thanks for message ,please don't except any reply after this")
                 print(phone_number,text)
             except Exception as e:
                 print(e)
