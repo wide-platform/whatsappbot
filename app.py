@@ -23,6 +23,71 @@ def send_message(recipient_number , message_text):
     }
     requests.post(url,headers=headers,json =payload)
 
+def show_order(recipient_number):
+    url = f'https://graph.facebook.com/v18.0/{phone_number_id}/messages'
+
+    headers={
+        "Authorization":f"Bearer {access_token}",
+        "Content-Type":"application/json"
+    }
+    payload={
+         "messaging_product":"whatsapp",
+        "to":recipient_number,
+        "type":"text",
+        "intereactive":{
+            "type":"list",
+            "to":recipient_number,
+            "body":{"text":"welcome to surge and accedd , please select the order:"},
+            "footer":{"Tap the button below to select the order"},
+            "action":{
+                "button":"view menu",
+                "sections":[
+                    {
+                        "title":"pads",
+                        "rows":[
+                            {
+                                "id":"ultr_pads","title":"extra duration","description":"100"
+                            },
+                            {
+                            "id":"premium_pads","title":"long lasting","description":"50"
+                            }
+                        ]
+                    }
+                ]
+            }
+
+        }
+    }
+    requests.post(url,headers=headers,json =payload)
+def order_summary(recipient_number,item_name,price):
+    url = f'https://graph.facebook.com/v18.0/{phone_number_id}/messages'
+
+    headers={
+        "Authorization":f"Bearer {access_token}",
+        "Content-Type":"application/json"
+    }
+    payload={
+         "messaging_product":"whatsapp",
+        "to":recipient_number,
+        "type":"interactive",
+        "interactive":{
+            "type":"button",
+            "header":{"type":"text","text":"order_summary"},
+            "body":{
+                "text":f"your selected items \n : {item_name} - {price}\n Delivery fees : 50\n total_price : {price +5}\n proceed to checkout"
+            },
+            "action":{
+                "buttons":[{
+                    "type":"reply","reply":{"id":f"confirm_{item_name}","title":"confirm"}
+                    
+                },
+                {
+                    "type":"reply","reply":{"id":f"confirm_{item_name}","title":"cancel"}
+                }]
+            }
+        }
+    }
+    requests.post(url,headers=headers,json =payload)
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
     if request.method =='GET':
@@ -45,9 +110,30 @@ def webhook():
                 message =body['entry'][0]['changes'][0]['value']['messages'][0]
                 phone_number = message['from']
                 text = message['text']['body']
+                if message =='text':
+                    show_order(phone_number)
+                elif message=="interatcive":
+                    interactive_type = message["interactive"]
+                    if interactive_type=='list_reply':
+                        selected_id = message["interactive"]['list_reply']['id']
+                        selected_title = message["interactive"]['list_reply']['title']
 
-                send_message(phone_number,"Thanks for message ,please don't except any reply after this")
-                print(phone_number,text)
+                        prices ={"premium_pads": 50,"ultr_pads":100}
+                        price  = prices.get(selected_id,0)
+                        order_summary(phone_number,selected_title,price)
+                        
+                    elif interactive_type=='button_reply':
+                        button_id=message['interactive']['button_reply']['id']
+                        if button_id.startswith('confirm'):
+                            item_bought=button_id.replace("confirm_","")
+                            bill_text = f"order confirmed"
+                            send_message(phone_number,"order confirmed")
+                            print(phone_number,text)
+                        if button_id.startswith('cancel'):
+                            send_message(phone_number,"order cancelled")
+
+
+
             except Exception as e:
                 print(e)
             return jsonify({"status":"success"},200)
