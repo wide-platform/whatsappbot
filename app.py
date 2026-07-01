@@ -114,7 +114,7 @@ def webhook():
                 if message =='text':
                     show_order(phone_number)
                 elif message=="interactive":
-                    interactive_type = message["interactive"]
+                    interactive_type = message["interactive"]['type']
                     if interactive_type=='list_reply':
                         selected_id = message["interactive"]['list_reply']['id']
                         selected_title = message["interactive"]['list_reply']['title']
