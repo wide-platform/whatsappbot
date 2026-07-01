@@ -22,7 +22,7 @@ def webhook():
         if body.get('object'):
             try:
                 message =body['entry'][0]['changes'][0]['value']['messages'][0]
-                phone_number = message['from]
+                phone_number = message['from']
                 text = message['text']['body']
                 print(phone_number,text)
             except Exception as e:
