@@ -21,10 +21,13 @@ def webhook():
 
         if body.get('object'):
             try:
-                message =body
-                print(message)
-            except:
-                return jsonify({"status":"success"},200)
+                message =body['entry'][0]['changes'][0]['value']['messages'][0]
+                phone_number = message['from]
+                text = message['text']['body']
+                print(phone_number,text)
+            except Exception as e:
+                print(e)
+            return jsonify({"status":"success"},200)
         else:
             return "something wron", 400
 if __name__ == '__main__':
