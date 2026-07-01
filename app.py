@@ -90,6 +90,7 @@ def order_summary(recipient_number,item_name,price):
     requests.post(url,headers=headers,json =payload)
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
+    print(request.method)
     if request.method =='GET':
         mode = request.args.get('hub.mode')
         token = request.args.get('hub.verify_token')
@@ -112,7 +113,7 @@ def webhook():
                 text = message['text']['body']
                 if message =='text':
                     show_order(phone_number)
-                elif message=="interatcive":
+                elif message=="interactive":
                     interactive_type = message["interactive"]
                     if interactive_type=='list_reply':
                         selected_id = message["interactive"]['list_reply']['id']
