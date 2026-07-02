@@ -112,12 +112,12 @@ def webhook():
                 message =body['entry'][0]['changes'][0]['value']['messages'][0]
                 print(message)
                 phone_number = message['from']
-                text = message['text']['body']
+                message_type = message.get("type")
                 print(phone_number,text)
-                if message =='text':
+                if message_type =='text':
                     print("inside show number block")
                     show_order(phone_number)
-                elif message=="interactive":
+                elif message_type=="interactive":
                     print("inside interactive block")
                     interactive_type = message["interactive"]['type']
                     if interactive_type=='list_reply':
