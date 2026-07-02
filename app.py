@@ -5,7 +5,7 @@ app=Flask(__name__)
 
 verify_toekn='testtoken'
 phone_number_id='1223995324127406'
-access_token='EAAObTIE5ifYBRzX6tuzRxwg0hThGywzP6za65Q60MdhGBRHxmqHphdT9W8pgCX6xQvWBdcalWwafeTdEbgdwgfS0GR1IQzeUzI9rKiKQj0wvyRwMjFWTR1Qurw8bnRZAH2uMqi870yj7QFqmxLQ1eiqhRgqRUba18rM9Yc7NKKNbVJTcXukp97XUcW13kSMQBUrTjzOPNKbvLxvmhHCoxKae7mYqATW0WlFaDkUHMIZCVGUdvZAJZCrZCraIHRZCocZCcATWfDh6MLZCN9w1JXKX'
+access_token='EAAObTIE5ifYBR9KPShZBVZBCpuXIEe4P3qZBCvP95e2sHhmXoMJJhFeHVzgaZAKRvBQ0tZACo7GjIEgknmrARj8eSYfLAKMBJZAjBIoh8oitKpRcW6uItUpkKbnYNFYPG3wQztYc8h3AqqENHBLSwtJGxREPlTfAuMecciuJ4oQzBVlm3Nn71Vh3QojhxaOu83UGYlu5i3I2E8MTryMme1WdqwieZC1rFZCEXt7ZC0iZAamZCzucsxpduq2Mr5V5eYgDSN3LZCxtztgYXuYjZBSC1zZAOB'
 
 def send_message(recipient_number , message_text):
     url = f'https://graph.facebook.com/v18.0/{phone_number_id}/messages'
@@ -33,10 +33,10 @@ def show_order(recipient_number):
     payload={
          "messaging_product":"whatsapp",
         "to":recipient_number,
-        "type":"text",
+        "type":"interactive",
         "intereactive":{
             "type":"list",
-            "to":recipient_number,
+          "headers":{"type":"text","text":"Our catalog"},
             "body":{"text":"welcome to surge and accedd , please select the order:"},
             "footer":{"Tap the button below to select the order"},
             "action":{
@@ -59,6 +59,7 @@ def show_order(recipient_number):
         }
     }
     requests.post(url,headers=headers,json =payload)
+    print({"show menu response":response.text})
 def order_summary(recipient_number,item_name,price):
     url = f'https://graph.facebook.com/v18.0/{phone_number_id}/messages'
 
@@ -112,8 +113,10 @@ def webhook():
                 phone_number = message['from']
                 text = message['text']['body']
                 if message =='text':
+                    print("inside show number block")
                     show_order(phone_number)
                 elif message=="interactive":
+                    print("inside interactive block")
                     interactive_type = message["interactive"]['type']
                     if interactive_type=='list_reply':
                         selected_id = message["interactive"]['list_reply']['id']
