@@ -34,7 +34,7 @@ def show_order(recipient_number):
          "messaging_product":"whatsapp",
         "to":recipient_number,
         "type":"interactive",
-        "intereactive":{
+        "interactive":{
             "type":"list",
           "headers":{"type":"text","text":"Our catalog"},
             "body":{"text":"welcome to surge and accedd , please select the order:"},
