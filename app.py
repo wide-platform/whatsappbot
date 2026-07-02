@@ -36,7 +36,7 @@ def show_order(recipient_number):
         "type":"interactive",
         "interactive":{
             "type":"list",
-          "headers":{"type":"text","text":"Our catalog"},
+          "header":{"type":"text","text":"Our catalog"},
             "body":{"text":"welcome to surge and accedd , please select the order:"},
             "footer":{"Tap the button below to select the order"},
             "action":{
@@ -58,7 +58,7 @@ def show_order(recipient_number):
 
         }
     }
-    requests.post(url,headers=headers,json =payload)
+   response =  requests.post(url,headers=headers,json =payload)
     print({"show menu response":response.text})
 def order_summary(recipient_number,item_name,price):
     url = f'https://graph.facebook.com/v18.0/{phone_number_id}/messages'
