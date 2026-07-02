@@ -113,7 +113,7 @@ def webhook():
                 print(message)
                 phone_number = message['from']
                 message_type = message.get("type")
-                print(phone_number,text)
+                print(phone_number)
                 if message_type =='text':
                     print("inside show number block")
                     show_order(phone_number)
