@@ -88,7 +88,8 @@ def order_summary(recipient_number,item_name,price):
             }
         }
     }
-    requests.post(url,headers=headers,json =payload)
+    response = requests.post(url,headers=headers,json =payload)
+    print({"show menu response":response.text})
 @app.route('/webhook',methods=['GET','POST'])
 def webhook():
     print(request.method)
@@ -121,11 +122,15 @@ def webhook():
                     print("inside interactive block")
                     interactive_type = message["interactive"]['type']
                     if interactive_type=='list_reply':
+                        print("inside list_reply block ")
+                        print(message["interactive"])
                         selected_id = message["interactive"]['list_reply']['id']
+                         print('selected_id')
                         selected_title = message["interactive"]['list_reply']['title']
-
+                        print('selected_title')
                         prices ={"premium_pads": 50,"ultr_pads":100}
                         price  = prices.get(selected_id,0)
+                        print(prices,phone_number)
                         order_summary(phone_number,selected_title,price)
                         
                     elif interactive_type=='button_reply':
