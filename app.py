@@ -38,7 +38,7 @@ def show_order(recipient_number):
             "type":"list",
           "header":{"type":"text","text":"Our catalog"},
             "body":{"text":"welcome to surge and accedd , please select the order:"},
-            "footer":{"Tap the button below to select the order"},
+            "footer":{"text":"Tap the button below to select the order"},
             "action":{
                 "button":"view menu",
                 "sections":[
