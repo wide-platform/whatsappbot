@@ -96,7 +96,7 @@ def webhook():
         mode = request.args.get('hub.mode')
         token = request.args.get('hub.verify_token')
         challenge = request.args.get('hub.challenge')
-    
+        
         if mode and token:
             if mode == 'subscribe' and token=='testtoken':
                 print("webhook verified")
@@ -106,12 +106,14 @@ def webhook():
 
     if request.method =='POST': 
         body = request.get_json()
-
+        print(body)
         if body.get('object'):
             try:
                 message =body['entry'][0]['changes'][0]['value']['messages'][0]
+                print(message)
                 phone_number = message['from']
                 text = message['text']['body']
+                print(phone_number,text)
                 if message =='text':
                     print("inside show number block")
                     show_order(phone_number)
